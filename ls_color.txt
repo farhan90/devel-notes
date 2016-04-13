@@ -1,0 +1,8 @@
+To change the color of directories in the terminal
+modify the bashrc file
+
+alisa ls='ls --colors'
+LS_COLORS='di=33'
+
+
+*The following will change the directory color to green*

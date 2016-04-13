@@ -1,0 +1,85 @@
+GIT Cheat sheet
+===============
+
+This is a git cheat sheet for submitting a patch
+
+
+1) First obtain the source code that you want to modify. To do that
+you can do a git clone to get the repo you want
+
+eg: git clone <REPO_URL>
+
+
+2) Then create a branch, for the changes you will work on
+
+eg: git checkout -b bug123 
+
+
+3) Make your changes and commit them with a good detailed commit
+message. To submit detailed git commit messages, you need to setup 
+the editor for git
+ -  git config --global core.editor <EDITOR>
+
+
+eg: git add <FILENAME>
+    git commit -a -s
+
+
+
+4) Then go into your "bug123" branch and make sure one last time
+there are no uncommitted changes
+
+eg: git checkout bug123
+    git status
+
+5)Since you were busy making changes, the master branch could have
+been updated. So before you merge your changes with the master 
+you need to update the master branch to the latest.
+
+eg: git fetch
+
+
+6)If there are any changes in the local/master to origin/master
+you want to merge the two
+
+eg: git checkout master
+    git merge origin/master --ff-only
+
+
+
+7) From your branch "bug123" find your commit id, which we would 
+apply to master branch using git cherry-pick. 
+
+eg: git log --oneline
+
+This will display all the commits, copy your commit id
+
+
+8) Now apply your commit to the master branch 
+
+eg: git checkout master
+    git cherry-pick <YOUR_COMMIT_ID>
+
+
+9) Then create a patch file with your latest commit on the master
+branch. 
+
+eg: git log --oneline
+To view your commit id on the master branch
+ 
+    git format-patch -1 --stdout <YOUR_COMMIT_ID>  > mypatch.patch
+
+This will create a "mypatch.patch" file with your changes
+
+
+9.1) But let's say you made a mistake in your commit and you want to remove
+the commit from the master. To do that you would have to checkout into your
+master branch and reset the last commit 
+
+eg: git checkout master
+    git reset --hard HEAD~1
+
+10) If you are satisfied with everything you can now send your patch file with 
+your commit message to the mailing list using git send-mail
+ 
+ 

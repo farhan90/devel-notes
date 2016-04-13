@@ -1,0 +1,42 @@
+To install the linux kernel on cent os we need few
+tools :
+
+yum groupinstall "Development Tools"
+yum install ncurces-devel
+yum install qt-devel
+yum install zlib-devel binutils-devel elfutils-libelf-devel
+
+Get the kernel:
+
+wget http://www.kernel.org/pub/linux/kernel/v3.x/linux-3.14.17.tar.gz
+
+Building the kernel
+===================
+
+- make defconfig
+
+Will build the kernel with system default config
+To build the kernel with your config you can use:
+make menuconfig
+
+
+- make
+
+To build the kernel
+
+
+- make modules_install
+To install modules
+
+
+- make install
+Install the main kernel image. The kernel image
+will show up in the /boot directory
+
+
+ 
+
+
+
+
+
