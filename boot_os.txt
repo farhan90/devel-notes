@@ -1,0 +1,64 @@
+Booting an OS in a laptop or hardware
+=====================================
+
+- BIOS is started, which is at a known address in the
+memory
+
+- BIOS is at address 0xFFFF0
+
+- BIOS is then responsible for figuring out how the boot device
+to use. It also does some basic checks to for power and memory
+
+- The boot device contains Master Boot Record (MBR) in the first
+block or block 0. Since block sizes are 512 bytes, the entire
+boot loader is fitted there
+
+    <-----------------      512 bytes -------------------------> 
+    ------------------------------------------------------------
+    |     Bootloader                       |    Partition  | M |
+    |                                      |    Table      |   |   
+    -------------------------------------------------------------
+    <----------- 446 bytes-----------------><---- 64 bytes--><-2 bytes->
+
+
+    Bootloader - 446 bytes
+    Partition table - 64 bytes (4 partitions each of 16 bytes)
+    Magic Number - 2 bytes
+
+
+- The primary boot loader looks through the partition table to find 
+an active partition. It also scans the other partition to ensure they
+are inactive
+
+- Once the active partition is found, then its boot record/Volume Boot Record(VBR) is read from
+the device into memory
+
+
+- With GRUB there is a bootloader 1 and bootloader 1.5 stage. The bootloader 1
+loads the bootloader 1.5.
+
+- Bootloader 1.5 can then read the file system on the disk to read the GRUB conf file
+which contains the location of the kernel and initrd image. This loads the kernel selection
+prompt
+
+
+- Once a kernel is selected the second stage boot loader which then works on uncompressing the kernel....etc
+
+
+UEFI
+====
+
+- In modern computers BIOS is no longer used, but instead the UEFI framework
+
+- It's more powerful than BIOS 
+
+- Can boot from larger devices
+
+- It reads disks with GUID Partition Table (GPT)
+
+
+
+
+
+                         
+

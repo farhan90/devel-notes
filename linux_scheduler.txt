@@ -1,0 +1,75 @@
+Linux Scheduler
+===============
+
+- The linux scheduler implements the Completely Fair Scheduler
+
+- The scheduler assigns each thread a timeslice. Timeslice
+is the fixed time interval during which each thread in the system
+must run at least once. 
+
+- The timeslice of a thread depends on it's weight
+
+- In CFS each thread also has a vruntime property. The vruntime
+depends on a thread's running time and it's weight 
+
+	vruntime = runtime/weight
+
+
+- The scheduler picks threads with the lowest vruntime and
+so threads with higher weight/priority can get more CPU time
+
+
+- The threads are stored in a runqueue which is implemented as 
+Red-Black tree. Threads are stored in an order of increasing vruntime. 
+Red-Black tree makes a binary tree balanced. This makes searching
+for a thread with lowest vruntime quick (Olog(n))
+
+- A thread is pre-empted or yanked from a CPU when it's vruntime 
+exceeds it's timeslice or another thread with a lower time vruntime
+wakes up
+
+
+- In CFS each core maintains it's own local runqueue. With a global
+runqueue there would always be the cost of synchronization, and
+that can be expensive.
+
+- But this can lead to imbalancing of runqueues, where one core can
+have 10 threads in the runqueue and another core can have only 1 thread
+in it's runqueue.
+
+
+- Due to this the scheduler also runs load balancing to distribute the 
+load fairly across all cores. But load balancing is an expensive process
+because it includes iterating over several runqueues. Load balancing 
+also involves modifying cached data structures, since threads could be moved
+to different cpus. This can lead to expensive cache misses 
+
+
+- So load balancing is run periodically or in an "emergency" when a core becomes
+idle.
+
+
+LOAD BALANCING ALGROTIHM
+========================
+
+- The load balancing of the runqueues is done based on the "load" of a thread, 
+which is based on the thread's weight and average CPU utilization
+
+- Balancing the runqueues just based on thread's weight might not be efficient
+since we can have a scenario where one core could end up with a high priority thread
+and another core can end up with multiple low priority threads. But the high priority 
+thread could often sleep and make the first core idle. This would cause an "emergency"
+and cause re-balancing. So we want to consider both thread's weight and CPU utilization
+when balancing the runqueues.
+
+- The "load" of a thread also depends on another factor, which is the thread's cgroup.
+We can have one process with many threads and another process with few threads. The threads
+of the first process combined could get more CPU time than the thread's of the second process.
+This would be unfair. So the load balancing algorithm also tracks the cgroup of a thread 
+i.e the "load" of the thread divided by the weights of the other threads in it's cgroup
+
+
+
+  
+
+  
